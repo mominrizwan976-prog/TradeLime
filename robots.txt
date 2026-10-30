@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://square-thunder-721d.mominrizwan976.workers.dev/sitemap.xml
