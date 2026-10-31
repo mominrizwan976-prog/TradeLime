@@ -21,9 +21,14 @@ self.addEventListener('push', function (e) {
 self.addEventListener('notificationclick', function (e) {
   e.notification.close();
   var url = new URL((e.notification.data && e.notification.data.url) || '/', self.location.origin).href;
+  var path = (e.notification.data && e.notification.data.url) || '/';
+  // Website already open: bring it to the front and open that order / product inside it.
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (list) {
     for (var i = 0; i < list.length; i++) {
-      if (list[i].url.indexOf(self.location.origin) === 0 && 'focus' in list[i]) return list[i].focus();
+      if (list[i].url.indexOf(self.location.origin) === 0 && 'focus' in list[i]) {
+        try { list[i].postMessage({ open: path }); } catch (x) {}
+        return list[i].focus();
+      }
     }
     return self.clients.openWindow(url);
   }));
